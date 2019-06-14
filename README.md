@@ -35,6 +35,10 @@ cd neurips2019_disentanglement_challenge_starter_kit
 pip install -r requirements.txt
 ```
 
+### Download and Prepare Dataset
+
+Follow the instructions [here](https://github.com/google-research/disentanglement_lib#downloading-the-data-sets) to download the publicly available datasets, and store them inside `./scratch/datasets` folder. Please ensure that the datasets are not checked into the repository.
+
 ### Test Submission Locally
 
 ```
@@ -42,6 +46,9 @@ cd neurips2019_disentanglement_challenge_starter_kit
 
 # Build docker image for your submission
 ./build.sh
+
+##
+## You can update any custom env variables in `environ.sh`
 
 # In a separate tab :
 # Finally, run your agent locally by :
