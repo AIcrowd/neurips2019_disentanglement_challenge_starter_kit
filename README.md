@@ -32,6 +32,7 @@ conda install pytorch torchvision -c pytorch
 ```
 git clone git@github.com:AIcrowd/neurips2019_disentanglement_challenge_starter_kit.git
 cd neurips2019_disentanglement_challenge_starter_kit
+pip install -r requirements.txt
 ```
 
 ### Test Submission Locally
