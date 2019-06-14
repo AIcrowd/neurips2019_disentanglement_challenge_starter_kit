@@ -2,7 +2,7 @@
 
 # NeurIPS 2019 : Disentanglement Challenge Starter Kit
 
-[![gitter-badge](https://badges.gitter.im/AIcrowd-HQ/disentanglement_challenge.png)](https://gitter.im/crowdAI/NIPS-Learning-To-Run-Challenge)
+[![gitter-badge](https://badges.gitter.im/AIcrowd-HQ/disentanglement_challenge.png)](http://gitter.im/AIcrowd-HQ/disentanglement_challenge)
 
 Instructions to make submissions to the [NeurIPS 2019 : Disentanglement Challenge](https://www.aicrowd.com/challenges/neurips-2019-disentanglement-challenge).
 
@@ -178,4 +178,3 @@ and if everything works out correctly, then you should be able to see the final 
 # Author
 
 Sharada Mohanty <https://twitter.com/MeMohanty>
-
