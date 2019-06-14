@@ -167,10 +167,15 @@ You now should be able to see the details of your submission at :
 
 **NOTE**: Remember to update your username in the link above :wink:
 
-**TODO** : Add screenshots
+In the link above, you should start seeing something like this take shape (each of the steps can take a bit of time, so please be patient too :wink: ) :
+![](https://i.imgur.com/69nf0Te.png)
+
+and if everything works out correctly, then you should be able to see the final scores like this :
+![](https://i.imgur.com/FPIqPKb.png)
 
 **Best of Luck** :tada: :tada:
 
 # Author
 
 Sharada Mohanty <https://twitter.com/MeMohanty>
+
