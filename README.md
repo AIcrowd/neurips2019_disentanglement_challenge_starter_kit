@@ -8,6 +8,8 @@ Instructions to make submissions to the [NeurIPS 2019 : Disentanglement Challeng
 
 Participants will have to submit their code, with packaging specifications, and the evaluator will automatically build a docker image and execute their code against a series of secret datasets.
 
+![](https://i.imgur.com/zr8RUr1.gif)
+
 ### Setup
 
 - **docker** : By following the instructions [here](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
