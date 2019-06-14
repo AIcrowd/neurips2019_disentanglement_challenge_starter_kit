@@ -2,7 +2,7 @@
 
 # NeurIPS 2019 : Disentanglement Challenge Starter Kit
 
-[![gitter-badge](https://gitter.im/AIcrowd-HQ/disentanglement_challenge)](https://gitter.im/crowdAI/NIPS-Learning-To-Run-Challenge)
+[![gitter-badge](https://gitter.im/AIcrowd-HQ/disentanglement_challenge.png)](https://gitter.im/crowdAI/NIPS-Learning-To-Run-Challenge)
 
 Instructions to make submissions to the [NeurIPS 2019 : Disentanglement Challenge](https://www.aicrowd.com/challenges/neurips-2019-disentanglement-challenge).
 
