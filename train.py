@@ -95,7 +95,7 @@ postprocess_gin = ["postprocess.gin"]  # This contains the settings.
 postprocess.postprocess_with_gin(model_path, representation_path, overwrite,
                                   postprocess_gin)
 
-
+print("Written output to : ", experiment_output_path)
 ########################################################################
 # Register Progress (of representation extraction)
 ########################################################################

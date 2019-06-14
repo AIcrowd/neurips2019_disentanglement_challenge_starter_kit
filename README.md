@@ -53,6 +53,13 @@ cd neurips2019_disentanglement_challenge_starter_kit
 # In a separate tab :
 # Finally, run your agent locally by :
 ./docker_run.sh
+
+# Now you should see the output of your training inside the
+# ./scratch/shared folder
+
+# Then you can do a simple local evaluation by running :
+
+python local_evaluation.py
 ```
 
 # How do I specify my software runtime ?
