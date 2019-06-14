@@ -58,7 +58,7 @@ cd neurips2019_disentanglement_challenge_starter_kit
 # ./scratch/shared folder
 
 # Then you can do a simple local evaluation by running :
-
+export DISENTANGLEMENT_LIB_DATA="./scratch/dataset/
 python local_evaluation.py
 ```
 
