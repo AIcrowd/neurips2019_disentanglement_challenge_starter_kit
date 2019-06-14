@@ -18,8 +18,8 @@ model.random_seed = 0
 vae.beta = 4
 encoder.num_latent = 10
 vae_optimizer.optimizer_fn = @AdamOptimizer
-# We train for only 10 steps, in practice we train for 300000 steps.
-model.training_steps = 10
+# We train for only 20 steps, in practice we train for 300000 steps.
+model.training_steps = 20
 model.random_seed=0
 AdamOptimizer.beta1 = 0.9
 AdamOptimizer.beta2 = 0.999
