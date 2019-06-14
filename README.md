@@ -107,6 +107,11 @@ The recommended way is to use Anaconda configuration files using **environment.y
 conda env export --no-build > environment.yml
 
 # Note the `--no-build` flag, which is important if you want your anaconda env to be replicable across all
+# Or if you have a rather simple softwar runtime, then even a :
+#
+# pip freeze > requirements.txt
+#
+# could work.
 ```
 
 ### Debugging the packaged software environment
@@ -138,7 +143,7 @@ Then you can add the correct git remote, and finally submit by doing :
 ```
 cd neurips2019_disentanglement_challenge_starter_kit
 # Add AIcrowd git remote endpoint
-git remote add aicrowd git@gitlab.aicrowd.com/:<YOUR_AICROWD_USER_NAME>/neurips2019_disentanglement_challenge_starter_kit.git
+git remote add aicrowd git@gitlab.aicrowd.com:<YOUR_AICROWD_USER_NAME>/neurips2019_disentanglement_challenge_starter_kit.git
 git push aicrowd master
 
 # Create a tag for your submission and push
