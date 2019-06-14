@@ -1,0 +1,4 @@
+curl
+git
+vim
+ssh
