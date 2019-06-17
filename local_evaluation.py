@@ -53,7 +53,6 @@ evaluation_configs.append("./extra_metrics_configs/irs.gin")
 expected_evaluation_metrics = [
     'dci',
     'factor_vae_metric',
-    'mig',
     'sap_score',    
     'mig',
     'irs'
