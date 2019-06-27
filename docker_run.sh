@@ -26,7 +26,7 @@ sudo nvidia-docker run \
     -e DISENTANGLEMENT_LIB_DATA="/DATASET" \
     -e AICROWD_OUTPUT_PATH="/SHARED" \
     -e AICROWD_EVALUATION_NAME="experiment_name" \
-    -e AICROWD_DATASET_NAME="cars3d" \
+    -e AICROWD_DATASET_NAME="mpi3d_toy" \
     -it ${IMAGE_NAME}:${IMAGE_TAG} \
     /www/run.sh
 
