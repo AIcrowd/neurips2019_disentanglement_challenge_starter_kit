@@ -165,7 +165,7 @@ git push aicrowd submission-v0.1
 ```
 
 You now should be able to see the details of your submission at :
-[gitlab.aicrowd.com//<YOUR_AICROWD_USER_NAME>/neurips2019_disentanglement_challenge_starter_kit/issues](gitlab.aicrowd.com//<YOUR_AICROWD_USER_NAME>/neurips2019_disentanglement_challenge_starter_kit/issues)
+[gitlab.aicrowd.com/<YOUR_AICROWD_USER_NAME>/neurips2019_disentanglement_challenge_starter_kit/issues](gitlab.aicrowd.com//<YOUR_AICROWD_USER_NAME>/neurips2019_disentanglement_challenge_starter_kit/issues)
 
 **NOTE**: Remember to update your username in the link above :wink:
 
