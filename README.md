@@ -14,7 +14,7 @@ Participants will have to submit their code, with packaging specifications, and 
 
 - **docker** : By following the instructions [here](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 - **nvidia-docker** : By following the instructions [here](<https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)>)
-- **aicrowd-repo2docker**
+- **aicrowd-repo2docker** [This [package](https://pypi.org/project/aicrowd-repo2docker/) requires python 3.4+]
 
 ```sh
 pip install -U aicrowd-repo2docker
