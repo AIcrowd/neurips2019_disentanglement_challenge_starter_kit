@@ -43,6 +43,8 @@ Follow the instructions [here](https://github.com/google-research/disentanglemen
 
 ### Test Submission Locally
 
+#### Note: This is just a test submission which will only train for 10 steps (to keep training time short). To attain reasonable performance, about 300'000 training steps are recommended. This setting can be changed in model.gin.
+
 ```
 cd neurips2019_disentanglement_challenge_starter_kit
 
@@ -60,7 +62,7 @@ cd neurips2019_disentanglement_challenge_starter_kit
 # ./scratch/shared folder
 
 # Then you can do a simple local evaluation by running :
-export DISENTANGLEMENT_LIB_DATA="./scratch/dataset/
+export DISENTANGLEMENT_LIB_DATA="./scratch/dataset/"
 python local_evaluation.py
 ```
 
