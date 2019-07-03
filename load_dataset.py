@@ -55,4 +55,9 @@ if __name__ == '__main__':
     dlib_dataset = DLIBDataset('Cars3D')
     print(dlib_dataset[0].shape)
     # ^ prints `torch.Size([3, 64, 64])`
-
+    from torch.utils.data.dataloader import DataLoader
+    loader = DataLoader(dlib_dataset, 32, True, num_workers=2)
+    for b in loader:
+        print(b.shape)
+        # ^ prints `torch.Size([3, 64, 64])` and means that multiprocessing works
+        break
