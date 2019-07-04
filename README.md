@@ -80,7 +80,7 @@ This repository includes an example `environment.yml`
 
 # What should my code structure be like ?
 
-Please follow the structure documented in the included [run.py](https://github.com/AIcrowd/neurips2019_disentanglement_challenge_starter_kit/blob/master/run.py) to adapt
+Please follow the structure documented in the included [train.py](https://github.com/AIcrowd/neurips2019_disentanglement_challenge_starter_kit/blob/master/train.py) to adapt
 your already existing code to the required structure for this round.
 
 ## Important Concepts
