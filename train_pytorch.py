@@ -1,13 +1,28 @@
 __doc__ = """
-Example training script with PyTorch. Before you run this script, do the following. 
+Example training script with PyTorch. Here's what you need to do. 
 
-Ensure that the following environment variables are set (you many use `export BLAHBLAH=blahblah`).
+Before you run this script, ensure that the following environment variables are set:
     1. AICROWD_OUTPUT_PATH (default: './scratch/shared')
     2. AICROWD_EVALUATION_NAME (default: 'experiment_name')
     3. AICROWD_DATASET_NAME (default: 'cars3d')
+    4. DISENTANGLEMENT_LIB_DATA (you may set this to './scratch/dataset' if that's 
+                                 where the data lives)
 
-You'll find a few utility functions in utils_pytorch.py (for pytorch related stuff) and in 
-load_dataset.py (for data logistics).   
+We provide utility functions to make the data and model logistics painless. 
+But this assumes that you have set the above variables correctly.    
+
+Once you're done with training, you'll need to export the function that returns
+the representations (which we evaluate). This function should take as an input a batch of 
+images (NCHW) and return a batch of vectors (NC), where N is the batch-size, C is the 
+number of channels, H and W are height and width respectively. 
+
+To help you with that, we provide an `export_model` function in utils_pytorch.py. If this 
+function is a torch.jit.ScriptModule, you're all set (just call `export_model(model)`); 
+if not, it will be traced (!) and the resulting ScriptModule will be written out. To learn what 
+tracing entails: https://pytorch.org/docs/stable/jit.html#torch.jit.trace 
+
+You'll find a few more utility functions in utils_pytorch.py (for pytorch related stuff) and in 
+load_dataset.py (for data logistics).
 """
 
 import argparse
