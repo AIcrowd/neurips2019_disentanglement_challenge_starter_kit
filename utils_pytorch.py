@@ -1,9 +1,20 @@
 from copy import deepcopy
 import os
+from collections import namedtuple
 
 import numpy as np
 import torch
 from torch.jit import trace
+
+
+ExperimentConfig = namedtuple('ExperimentConfig',
+                              ('base_path', 'experiment_name', 'dataset_name'))
+
+
+def get_config():
+    return ExperimentConfig(base_path=os.getenv("AICROWD_OUTPUT_PATH","../scratch/shared"),
+                            experiment_name=os.getenv("AICROWD_EVALUATION_NAME", "experiment_name"),
+                            dataset_name=os.getenv("AICROWD_DATASET_NAME", "cars3d"))
 
 
 def get_model_path(base_path=None, experiment_name=None, make=True):
