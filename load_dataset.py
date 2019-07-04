@@ -47,11 +47,12 @@ def get_dataset(name=None, seed=0, iterator_len=50000):
     return DLIBDataset(name, seed=seed, iterator_len=iterator_len)
 
 
-def get_loader(name=None, batch_size=32, seed=0, iterator_len=50000, num_workers=0):
+def get_loader(name=None, batch_size=32, seed=0, iterator_len=50000, num_workers=0,
+               **dataloader_kwargs):
     name = get_dataset_name() if name is None else name
     dlib_dataset = DLIBDataset(name, seed=seed, iterator_len=iterator_len)
     loader = DataLoader(dlib_dataset, batch_size=batch_size, shuffle=True,
-                        num_workers=num_workers)
+                        num_workers=num_workers, **dataloader_kwargs)
     return loader
 
 

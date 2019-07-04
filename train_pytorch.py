@@ -3,11 +3,14 @@ import torch
 import torch.utils.data
 from torch import nn, optim
 from torch.nn import functional as F
-from torchvision import datasets, transforms
-from torchvision.utils import save_image
+
+import utils_pytorch as pyu
+import load_dataset as load
 
 
-parser = argparse.ArgumentParser(description='VAE MNIST Example')
+config = pyu.get_config()
+
+parser = argparse.ArgumentParser(description='VAE Example')
 parser.add_argument('--batch-size', type=int, default=128, metavar='N',
                     help='input batch size for training (default: 128)')
 parser.add_argument('--epochs', type=int, default=10, metavar='N',
@@ -20,54 +23,73 @@ parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
 parser.add_argument('--save-image', action='store_true', default=False,
                     help='store image to a results folder')
+
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 
 torch.manual_seed(args.seed)
-
 device = torch.device("cuda" if args.cuda else "cpu")
 
 kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
-train_loader = torch.utils.data.DataLoader(
-    datasets.MNIST('../data', train=True, download=True,
-                   transform=transforms.ToTensor()),
-    batch_size=args.batch_size, shuffle=True, **kwargs)
-test_loader = torch.utils.data.DataLoader(
-    datasets.MNIST('../data', train=False, transform=transforms.ToTensor()),
-    batch_size=args.batch_size, shuffle=True, **kwargs)
+train_loader = load.get_loader(batch_size=args.batch_size, **kwargs)
+
+
+class Encoder(nn.Module):
+    def __init__(self):
+        super(Encoder, self).__init__()
+        self.tail = nn.Sequential(nn.Linear(4096, 400),
+                                  nn.ReLU())
+        self.head_mu = nn.Linear(400, 20)
+        self.head_logvar = nn.Linear(400, 20)
+
+    def forward(self, x):
+        h = self.tail(x)
+        return self.head_mu(h), self.head_logvar(h)
+
+
+class Decoder(nn.Sequential):
+    def __init__(self):
+        super(Decoder, self).__init__(nn.Linear(20, 400),
+                                      nn.ReLU(),
+                                      nn.Linear(400, 4096),
+                                      nn.Sigmoid())
+
+
+class RepresentationExtractor(nn.Module):
+    VALID_MODES = ['mean', 'sample']
+
+    def __init__(self, encoder, mode='mean'):
+        super(RepresentationExtractor, self).__init__()
+        assert mode in self.VALID_MODES, f'`mode` must be one of {self.VALID_MODES}'
+        self.encoder = encoder
+        self.mode = mode
+
+    def forward(self, x):
+        mu, logvar = self.encoder(x)
+        if self.mode == 'mean':
+            return mu
+        elif self.mode == 'sample':
+            return self.reparameterize(mu, logvar)
+        else:
+            raise NotImplementedError
+
+    @staticmethod
+    def reparameterize(mu, logvar):
+        std = torch.exp(0.5 * logvar)
+        eps = torch.randn_like(std)
+        return mu + eps * std
 
 
 class VAE(nn.Module):
     def __init__(self):
         super(VAE, self).__init__()
-
-        self.fc1 = nn.Linear(4096, 400)
-        self.fc21 = nn.Linear(400, 20)
-        self.fc22 = nn.Linear(400, 20)
-        self.fc3 = nn.Linear(20, 400)
-        self.fc4 = nn.Linear(400, 4096)
-
-    def encode(self, x):
-        h1 = F.relu(self.fc1(x))
-        return self.fc21(h1), self.fc22(h1)
-
-    def reparameterize(self, mu, logvar):
-        std = torch.exp(0.5*logvar)
-        eps = torch.randn_like(std)
-        return mu + eps*std
-
-    def decode(self, z):
-        h3 = F.relu(self.fc3(z))
-        return torch.sigmoid(self.fc4(h3))
+        self.encoder = Encoder()
+        self.decoder = Decoder()
 
     def forward(self, x):
-        mu, logvar = self.encode(x.view(-1, 784))
-        z = self.reparameterize(mu, logvar)
-        return self.decode(z), mu, logvar
-
-    def represent(self, x):
-        # TODO
-        pass
+        mu, logvar = self.encoder(x.view(-1, 4096))
+        z = RepresentationExtractor.reparameterize(mu, logvar)
+        return self.decoder(z), mu, logvar
 
 
 model = VAE().to(device)
@@ -108,37 +130,8 @@ def train(epoch):
           epoch, train_loss / len(train_loader.dataset)))
 
 
-def test(epoch):
-    model.eval()
-    test_loss = 0
-    with torch.no_grad():
-        for i, (data, _) in enumerate(test_loader):
-            data = data.to(device)
-            recon_batch, mu, logvar = model(data)
-            test_loss += loss_function(recon_batch, data, mu, logvar).item()
-            if i == 0:
-                n = min(data.size(0), 8)
-                comparison = torch.cat([data[:n],
-                                      recon_batch.view(args.batch_size, 1, 28, 28)[:n]])
-                if args.save_image:
-                    save_image(comparison.cpu(),
-                             'results/reconstruction_' + str(epoch) + '.png', nrow=n)
-
-    test_loss /= len(test_loader.dataset)
-    print('====> Test set loss: {:.4f}'.format(test_loss))
-
-
-def go():
+if __name__ == '__main__':
     for epoch in range(1, args.epochs + 1):
         train(epoch)
-        test(epoch)
-        with torch.no_grad():
-            sample = torch.randn(64, 20).to(device)
-            sample = model.decode(sample).cpu()
-            if args.save_image:
-                save_image(sample.view(64, 1, 28, 28),
-                           'results/sample_' + str(epoch) + '.png')
-
-
-if __name__ == '__main__':
-    go()
+    # Export the representation extractor
+    pyu.export_model(RepresentationExtractor(model.encoder, 'mean'))
