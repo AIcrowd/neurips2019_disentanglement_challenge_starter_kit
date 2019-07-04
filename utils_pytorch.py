@@ -17,7 +17,7 @@ def get_config():
     AICROWD_EVALUATION_NAME and AICROWD_DATASET_NAME and returns a
     named tuple.
     """
-    return ExperimentConfig(base_path=os.getenv("AICROWD_OUTPUT_PATH","../scratch/shared"),
+    return ExperimentConfig(base_path=os.getenv("AICROWD_OUTPUT_PATH", "./scratch/shared"),
                             experiment_name=os.getenv("AICROWD_EVALUATION_NAME", "experiment_name"),
                             dataset_name=os.getenv("AICROWD_DATASET_NAME", "cars3d"))
 
