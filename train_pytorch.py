@@ -1,3 +1,15 @@
+__doc__ = """
+Example training script with PyTorch. Before you run this script, do the following. 
+
+Ensure that the following environment variables are set (you many use `export BLAHBLAH=blahblah`).
+    1. AICROWD_OUTPUT_PATH (default: './scratch/shared')
+    2. AICROWD_EVALUATION_NAME (default: 'experiment_name')
+    3. AICROWD_DATASET_NAME (default: 'cars3d')
+
+You'll find a few utility functions in utils_pytorch.py (for pytorch related stuff) and in 
+load_dataset.py (for data logistics).   
+"""
+
 import argparse
 import torch
 import torch.utils.data
@@ -7,8 +19,8 @@ from torch.nn import functional as F
 import utils_pytorch as pyu
 import load_dataset as load
 
+import aicrowd_helpers
 
-config = pyu.get_config()
 
 parser = argparse.ArgumentParser(description='VAE Example')
 parser.add_argument('--batch-size', type=int, default=128, metavar='N',
@@ -21,8 +33,6 @@ parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
 parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
-parser.add_argument('--save-image', action='store_true', default=False,
-                    help='store image to a results folder')
 
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
@@ -37,13 +47,13 @@ train_loader = load.get_loader(batch_size=args.batch_size, **kwargs)
 class Encoder(nn.Module):
     def __init__(self):
         super(Encoder, self).__init__()
-        self.tail = nn.Sequential(nn.Linear(4096, 400),
+        self.tail = nn.Sequential(nn.Linear(4096 * 3, 400),
                                   nn.ReLU())
         self.head_mu = nn.Linear(400, 20)
         self.head_logvar = nn.Linear(400, 20)
 
     def forward(self, x):
-        h = self.tail(x)
+        h = self.tail(x.contiguous().view(-1, 4096 * 3))
         return self.head_mu(h), self.head_logvar(h)
 
 
@@ -51,7 +61,7 @@ class Decoder(nn.Sequential):
     def __init__(self):
         super(Decoder, self).__init__(nn.Linear(20, 400),
                                       nn.ReLU(),
-                                      nn.Linear(400, 4096),
+                                      nn.Linear(400, 4096 * 3),
                                       nn.Sigmoid())
 
 
@@ -87,7 +97,7 @@ class VAE(nn.Module):
         self.decoder = Decoder()
 
     def forward(self, x):
-        mu, logvar = self.encoder(x.view(-1, 4096))
+        mu, logvar = self.encoder(x)
         z = RepresentationExtractor.reparameterize(mu, logvar)
         return self.decoder(z), mu, logvar
 
@@ -98,7 +108,7 @@ optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
 # Reconstruction + KL divergence losses summed over all elements and batch
 def loss_function(recon_x, x, mu, logvar):
-    BCE = F.binary_cross_entropy(recon_x, x.view(-1, 784), reduction='sum')
+    BCE = F.binary_cross_entropy(recon_x, x.view(-1, 4096 * 3), reduction='sum')
 
     # see Appendix B from VAE paper:
     # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
@@ -112,7 +122,7 @@ def loss_function(recon_x, x, mu, logvar):
 def train(epoch):
     model.train()
     train_loss = 0
-    for batch_idx, (data, _) in enumerate(train_loader):
+    for batch_idx, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
         recon_batch, mu, logvar = model(data)
@@ -131,7 +141,16 @@ def train(epoch):
 
 
 if __name__ == '__main__':
+    # Go!
+    aicrowd_helpers.execution_start()
+    aicrowd_helpers.register_progress(0.)
+    # Training loop
     for epoch in range(1, args.epochs + 1):
         train(epoch)
+    # Almost done...
+    aicrowd_helpers.register_progress(0.90)
     # Export the representation extractor
-    pyu.export_model(RepresentationExtractor(model.encoder, 'mean'))
+    pyu.export_model(RepresentationExtractor(model.encoder, 'mean'),
+                     input_shape=(1, 3, 64, 64))
+    # Done!
+    aicrowd_helpers.register_progress(1.0)

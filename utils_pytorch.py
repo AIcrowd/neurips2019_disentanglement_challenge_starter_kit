@@ -12,12 +12,36 @@ ExperimentConfig = namedtuple('ExperimentConfig',
 
 
 def get_config():
+    """
+    This function reads the environment variables AICROWD_OUTPUT_PATH,
+    AICROWD_EVALUATION_NAME and AICROWD_DATASET_NAME and returns a
+    named tuple.
+    """
     return ExperimentConfig(base_path=os.getenv("AICROWD_OUTPUT_PATH","../scratch/shared"),
                             experiment_name=os.getenv("AICROWD_EVALUATION_NAME", "experiment_name"),
                             dataset_name=os.getenv("AICROWD_DATASET_NAME", "cars3d"))
 
 
 def get_model_path(base_path=None, experiment_name=None, make=True):
+    """
+    This function gets the path to where the model is expected to be stored.
+
+    Parameters
+    ----------
+    base_path : str
+        Path to the directory where the experiments are to be stored.
+        This defaults to AICROWD_OUTPUT_PATH (see `get_config` above) and which in turn
+        defaults to './scratch/shared'.
+    experiment_name : str
+        Name of the experiment. This defaults to AICROWD_EVALUATION_NAME which in turn
+        defaults to 'experiment_name'.
+    make : Makes the directory where the returned path leads to (if it doesn't exist already)
+
+    Returns
+    -------
+    str
+        Path to where the model should be stored (to be found by the evaluation function later).
+    """
     base_path = os.getenv("AICROWD_OUTPUT_PATH","../scratch/shared") \
         if base_path is None else base_path
     experiment_name = os.getenv("AICROWD_EVALUATION_NAME", "experiment_name") \
@@ -29,6 +53,27 @@ def get_model_path(base_path=None, experiment_name=None, make=True):
 
 
 def export_model(model, path=None, input_shape=None):
+    """
+    Exports the model. If the model is a `ScriptModule`, it is saved as is. If not,
+    it is traced (with the given input_shape) and the resulting ScriptModule is saved
+    (this requires `input_shape` to not be None).
+
+    Parameters
+    ----------
+    model : torch.nn.Module or torch.jit.ScriptModule
+        Pytorch Module or a ScriptModule.
+    path : str
+        Path to the file where the model is saved. Defaults to the value set by the
+        `get_model_path` function above.
+    input_shape : tuple or list
+        Shape of the input to trace the module with. This is only required if model is not a
+        torch.jit.ScriptModule.
+
+    Returns
+    -------
+    str
+        Path to where the model is saved.
+    """
     path = get_model_path() if path is None else path
     model = deepcopy(model).cpu().eval()
     if not isinstance(model, torch.jit.ScriptModule):
@@ -42,12 +87,44 @@ def export_model(model, path=None, input_shape=None):
 
 
 def import_model(path=None):
+    """
+    Imports a model (as ScriptModule) from file.
+
+    Parameters
+    ----------
+    path : str
+        Path to where the model is saved. Defaults to the return value of the `get_model_path`
+        function above.
+
+    Returns
+    -------
+    torch.jit.ScriptModule
+        The model file.
+    """
     path = get_model_path() if path is None else path
     return torch.jit.load(path)
 
 
 def make_representor(model, cuda=False):
-    model = deepcopy(model)
+    """
+    Encloses the pytorch ScriptModule in a callable that can be used by `disentanglement_lib`.
+
+    Parameters
+    ----------
+    model : torch.nn.Module or torch.jit.ScriptModule
+        The Pytorch model.
+    cuda : bool
+        Whether to use CUDA for inference.
+
+    Returns
+    -------
+    callable
+        A callable function (`representation_function` in dlib code)
+    """
+    # Deepcopy doesn't work on ScriptModule objects yet:
+    # https://github.com/pytorch/pytorch/issues/18106
+    # model = deepcopy(model)
+    # model.save()
     model = model.cuda() if cuda else model.cpu()
 
     # Define the representation function
@@ -68,15 +145,3 @@ def make_representor(model, cuda=False):
         return y
 
     return _represent
-
-
-if __name__ == '__main__':
-    import torch.nn as nn
-    model = nn.Linear(10, 10)
-    path = export_model(model,
-                        path='/Users/nrahaman/Documents/Python/'
-                             'neurips2019_disentanglement_challenge_starter_kit/'
-                             'scratch/test.pt',
-                        input_shape=(1, 10))
-    model2 = import_model(path)
-    pass

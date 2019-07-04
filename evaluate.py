@@ -36,6 +36,9 @@ import tensorflow as tf
 import tensorflow_hub as hub
 import gin.tf
 
+from tensorflow.python.framework.errors_impl import NotFoundError
+from load_dataset import get_dataset_name
+
 
 def evaluate_with_gin(model_dir,
                       output_dir,
@@ -98,18 +101,21 @@ def evaluate(model_dir,
     # Set up time to keep track of elapsed time in results.
     experiment_timer = time.time()
 
-    # Automatically set the proper data set if necessary. We replace the active
-    # gin config as this will lead to a valid gin config file where the data set
-    # is present.
-    if gin.query_parameter("dataset.name") == "auto":
-        # Obtain the dataset name from the gin config of the previous step.
-        gin_config_file = os.path.join(model_dir, "results", "gin",
-                                       "postprocess.gin")
-        gin_dict = results.gin_dict(gin_config_file)
-        with gin.unlock_config():
-            gin.bind_parameter("dataset.name", gin_dict["dataset.name"].replace(
-                "'", ""))
-    dataset = named_data.get_named_ground_truth_data()
+    try:
+        # Automatically set the proper data set if necessary. We replace the active
+        # gin config as this will lead to a valid gin config file where the data set
+        # is present.
+        if gin.query_parameter("dataset.name") == "auto":
+            # Obtain the dataset name from the gin config of the previous step.
+            gin_config_file = os.path.join(model_dir, "results", "gin",
+                                           "postprocess.gin")
+            gin_dict = results.gin_dict(gin_config_file)
+            with gin.unlock_config():
+                gin.bind_parameter("dataset.name", gin_dict["dataset.name"].replace(
+                    "'", ""))
+        dataset = named_data.get_named_ground_truth_data()
+    except NotFoundError:
+        dataset = named_data.get_named_ground_truth_data(name=get_dataset_name())
 
     if os.path.exists(os.path.join(model_dir, 'tfhub')):
         # Path to TFHub module of previously trained representation.

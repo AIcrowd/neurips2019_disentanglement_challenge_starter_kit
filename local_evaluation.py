@@ -19,7 +19,10 @@ from __future__ import division
 from __future__ import print_function
 import os
 # from disentanglement_lib.evaluation import evaluate
+import disentanglement_lib
 import evaluate
+disentanglement_lib.evaluation.evaluate = evaluate
+
 from disentanglement_lib.evaluation.metrics import utils
 from disentanglement_lib.methods.unsupervised import train
 from disentanglement_lib.methods.unsupervised import vae
