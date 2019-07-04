@@ -52,11 +52,11 @@ def get_model_path(base_path=None, experiment_name=None, make=True):
     return model_path
 
 
-def export_model(model, path=None, input_shape=None):
+def export_model(model, path=None, input_shape=(1, 3, 64, 64)):
     """
     Exports the model. If the model is a `ScriptModule`, it is saved as is. If not,
     it is traced (with the given input_shape) and the resulting ScriptModule is saved
-    (this requires `input_shape` to not be None).
+    (this requires the `input_shape`, which defaults to the competition default).
 
     Parameters
     ----------
