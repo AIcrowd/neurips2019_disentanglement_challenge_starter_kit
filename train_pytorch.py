@@ -16,10 +16,11 @@ the representations (which we evaluate). This function should take as an input a
 images (NCHW) and return a batch of vectors (NC), where N is the batch-size, C is the 
 number of channels, H and W are height and width respectively. 
 
-To help you with that, we provide an `export_model` function in utils_pytorch.py. If this 
-function is a torch.jit.ScriptModule, you're all set (just call `export_model(model)`); 
-if not, it will be traced (!) and the resulting ScriptModule will be written out. To learn what 
-tracing entails: https://pytorch.org/docs/stable/jit.html#torch.jit.trace 
+To help you with that, we provide an `export_model` function in utils_pytorch.py. If your 
+representation function is a torch.jit.ScriptModule, you're all set 
+(just call `export_model(model)`); if not, it will be traced (!) and the resulting ScriptModule 
+will be written out. To learn what tracing entails: 
+https://pytorch.org/docs/stable/jit.html#torch.jit.trace 
 
 You'll find a few more utility functions in utils_pytorch.py (for pytorch related stuff) and in 
 load_dataset.py (for data logistics).
