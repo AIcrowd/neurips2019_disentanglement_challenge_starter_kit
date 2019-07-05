@@ -146,7 +146,7 @@ def make_representor(model, cuda=None):
         # Convert from NHWC to NCHW
         x = np.moveaxis(x, 3, 1)
         # Convert to torch tensor and evaluate
-        x = torch.from_numpy(x).to('cuda' if cuda else 'cpu')
+        x = torch.from_numpy(x).float().to('cuda' if cuda else 'cpu')
         with torch.no_grad():
             y = model(x)
         y = y.cpu().numpy()
