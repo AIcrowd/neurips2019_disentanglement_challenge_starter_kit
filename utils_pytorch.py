@@ -22,6 +22,14 @@ def get_config():
                             dataset_name=os.getenv("AICROWD_DATASET_NAME", "cars3d"))
 
 
+def use_cuda():
+    """
+    Whether to use CUDA for evaluation. Returns True if CUDA is available and
+    the environment variable AICROWD_CUDA is not set to False.
+    """
+    return torch.cuda.is_available() and os.getenv('AICROWD_CUDA', True)
+
+
 def get_model_path(base_path=None, experiment_name=None, make=True):
     """
     This function gets the path to where the model is expected to be stored.
@@ -49,6 +57,7 @@ def get_model_path(base_path=None, experiment_name=None, make=True):
     model_path = os.path.join(base_path, experiment_name, 'representation', 'pytorch_model.pt')
     if make:
         os.makedirs(os.path.dirname(model_path), exist_ok=True)
+        os.makedirs(os.path.join(os.path.dirname(model_path), 'results'), exist_ok=True)
     return model_path
 
 
@@ -105,7 +114,7 @@ def import_model(path=None):
     return torch.jit.load(path)
 
 
-def make_representor(model, cuda=False):
+def make_representor(model, cuda=None):
     """
     Encloses the pytorch ScriptModule in a callable that can be used by `disentanglement_lib`.
 
@@ -114,7 +123,8 @@ def make_representor(model, cuda=False):
     model : torch.nn.Module or torch.jit.ScriptModule
         The Pytorch model.
     cuda : bool
-        Whether to use CUDA for inference.
+        Whether to use CUDA for inference. Defaults to the return value of the `use_cuda`
+        function defined above.
 
     Returns
     -------
@@ -124,7 +134,7 @@ def make_representor(model, cuda=False):
     # Deepcopy doesn't work on ScriptModule objects yet:
     # https://github.com/pytorch/pytorch/issues/18106
     # model = deepcopy(model)
-    # model.save()
+    cuda = use_cuda() if cuda is None else cuda
     model = model.cuda() if cuda else model.cpu()
 
     # Define the representation function
