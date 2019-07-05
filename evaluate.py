@@ -37,7 +37,6 @@ import tensorflow_hub as hub
 import gin.tf
 
 from tensorflow.python.framework.errors_impl import NotFoundError
-from load_dataset import get_dataset_name
 
 
 def evaluate_with_gin(model_dir,
@@ -115,7 +114,13 @@ def evaluate(model_dir,
                     "'", ""))
         dataset = named_data.get_named_ground_truth_data()
     except NotFoundError:
-        dataset = named_data.get_named_ground_truth_data(name=get_dataset_name())
+        # If we did not train with disentanglement_lib, there is no "previous step",
+        # so we'll have to rely on the environment variable.
+        from load_dataset import get_dataset_name
+        if gin.query_parameter("dataset.name") == "auto":
+            with gin.unlock_config():
+                gin.bind_parameter("dataset.name", get_dataset_name())
+        dataset = named_data.get_named_ground_truth_data()
 
     if os.path.exists(os.path.join(model_dir, 'tfhub')):
         # Path to TFHub module of previously trained representation.
