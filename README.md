@@ -66,6 +66,23 @@ export DISENTANGLEMENT_LIB_DATA="./scratch/dataset/"
 python local_evaluation.py
 ```
 
+### Train and Test locally with Pytorch
+```
+cd neurips2019_disentanglement_challenge_starter_kit
+
+# Make sure that your datasets live in "./scatch/dataset". 
+# If they do not, change train_environ.sh accordingly. 
+source train_environ.sh
+export AICROWD_EVALUATION_NAME=myvae
+
+# Train a plain old VAE with Pytorch. 
+# See train_pytorch.py for more instructions
+python train_pytorch.py --epochs 10
+
+# Run the local evaluation
+python local_evaluation.py
+```
+
 # How do I specify my software runtime ?
 
 The software runtime is specified by exporting your `conda` env to the root
