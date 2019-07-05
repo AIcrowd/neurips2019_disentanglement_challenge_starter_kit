@@ -134,6 +134,12 @@ def evaluate(model_dir,
         # Evaluate results with pytorch
         results_dict = _evaluate_with_pytorch(module_path, evaluation_fn,
                                               dataset, random_seed)
+    elif os.path.exists(os.path.join(model_dir, 'python_model.dill')):
+        # Path to the dilled function
+        module_path = os.path.join(model_dir, 'python_model.dill')
+        # Evaluate results with numpy
+        results_dict = _evaluate_with_numpy(module_path, evaluation_fn,
+                                            dataset, random_seed)
     else:
         raise RuntimeError("`model_dir` must contain either a pytorch or a TFHub model.")
 
@@ -175,3 +181,17 @@ def _evaluate_with_pytorch(module_path, evalulation_fn, dataset, random_seed):
     # Easy peasy lemon squeezy
     return results_dict
 
+
+def _evaluate_with_numpy(module_path, evalulation_fn, dataset, random_seed):
+    import utils_numpy
+    # Load function and make a representor
+    fn = utils_numpy.import_function(path=module_path)
+    _representation_function = utils_numpy.make_representor(fn)
+    # Evaluate score with the evaluation_fn
+    results_dict = evalulation_fn(
+        dataset,
+        _representation_function,
+        random_state=np.random.RandomState(random_seed)
+    )
+    # Easy peasy lemon squeezy
+    return results_dict
