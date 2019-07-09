@@ -14,6 +14,13 @@ Participants will have to submit their code, with packaging specifications, and 
 
 - **Anaconda** (By following instructions [here](https://www.anaconda.com/download)) At least version `4.5.11` is required to correctly populate `environment.yml`.
 
+* **Create your new conda environment**
+
+```sh
+conda create python=3.6 --name disentanglement_challenge
+conda activate disentanglement_challenge
+```
+
 * **Your code specific dependencies**
 
 ```sh
