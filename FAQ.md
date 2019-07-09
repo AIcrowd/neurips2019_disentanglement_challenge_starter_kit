@@ -12,7 +12,7 @@ sudo ${REPO2DOCKER} --no-run \
 --debug .
 ```
 
-* **How can I run the previously build docker image to simulate a submission?**
+* **How can I run the previously build docker image to simulate an evaluation?**
 
 ```sh
 export DATASET=./scratch/dataset/
