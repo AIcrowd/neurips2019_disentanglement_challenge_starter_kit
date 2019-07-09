@@ -18,7 +18,18 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 import os
-from disentanglement_lib.evaluation import evaluate
+# from disentanglement_lib.evaluation import evaluate
+import disentanglement_lib
+
+try:
+    # Monkey patch in our own evaluate, which supports pytorch *and* tensorflow.
+    import evaluate
+    disentanglement_lib.evaluation.evaluate = evaluate
+    MONKEY = True
+except ImportError:
+    # No pytorch, no problem.
+    MONKEY = False
+
 from disentanglement_lib.evaluation.metrics import utils
 from disentanglement_lib.methods.unsupervised import train
 from disentanglement_lib.methods.unsupervised import vae
@@ -40,6 +51,15 @@ experiment_name = os.getenv("AICROWD_EVALUATION_NAME", "experiment_name")
 DATASET_NAME = "auto" 
 overwrite = True
 experiment_output_path = os.path.join(base_path, experiment_name)
+
+# Print the configuration for reference
+if not MONKEY:
+    print(f"Evaluating Experiment '{experiment_name}' from {base_path}.")
+else:
+    import utils_pytorch
+    exp_config = utils_pytorch.get_config()
+    print(f"Evaluating Experiment '{exp_config.experiment_name}' "
+          f"from {exp_config.base_path} on dataset {exp_config.dataset_name}")
 
 ##############################################################################
 # Gather Evaluation Configs | Compute Metrics
