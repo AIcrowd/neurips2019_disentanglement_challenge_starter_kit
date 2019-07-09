@@ -85,6 +85,8 @@ of your repository by doing :
 
 ```
 conda env export --no-build > environment.yml
+
+# It might make sense here to remove the requirements.txt here to avoid confusion as environment.yml takes precedence over requirements.txt
 ```
 
 This `environment.yml` file will be used to recreate the `conda environment`. This repository includes an example `environment.yml`
@@ -138,6 +140,10 @@ conda env export --no-build > environment.yml
 
 The evaluator will use `/home/aicrowd/run.sh` as the entrypoint, so please remember to have a `run.sh` at the root, which can instantitate any necessary environment variables, and also start executing your actual code. This repository includes a sample `run.sh` file.
 If you are using a Dockerfile to specify your software environment, please remember to create a `aicrowd` user, and place the entrypoint code at `run.sh`.
+
+## Frequently Asked Questions (FAQs)
+
+Please find a list of frequently asked questions [here](https://github.com/AIcrowd/neurips2019_disentanglement_challenge_starter_kit/blob/master/FAQ.md), and please feel free to send a pull request with more questions that you think can help other participants.
 
 ## Submission
 
