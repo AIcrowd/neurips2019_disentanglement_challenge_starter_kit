@@ -12,14 +12,6 @@ Participants will have to submit their code, with packaging specifications, and 
 
 ### Setup
 
-- **docker** : By following the instructions [here](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
-- **nvidia-docker** : By following the instructions [here](<https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)>)
-- **aicrowd-repo2docker** [This [package](https://pypi.org/project/aicrowd-repo2docker/) requires python 3.4+]
-
-```sh
-pip install -U aicrowd-repo2docker
-```
-
 - **Anaconda** (By following instructions [here](https://www.anaconda.com/download)) At least version `4.5.11` is required to correctly populate `environment.yml`.
 
 * **Your code specific dependencies**
@@ -41,28 +33,23 @@ pip install -r requirements.txt
 
 Follow the instructions [here](https://github.com/google-research/disentanglement_lib#downloading-the-data-sets) to download the publicly available datasets, and store them inside `./scratch/datasets` folder. Please ensure that the datasets are not checked into the repository.
 
-### Test Submission Locally
+### Train and Test Submission locally with Tensorflow
 
 #### Note: This is just a test submission which will only train for 10 steps (to keep training time short). To attain reasonable performance, about 300'000 training steps are recommended. This setting can be changed in model.gin.
 
 ```
 cd neurips2019_disentanglement_challenge_starter_kit
 
-# Build docker image for your submission
-./build.sh
+# Make sure that your datasets live in "./scatch/dataset". 
+# If they do not, change train_environ.sh accordingly. 
 
-##
-## You can update any custom env variables in `environ.sh`
+source train_environ.sh
+export AICROWD_EVALUATION_NAME=myvae
 
-# In a separate tab :
-# Finally, run your agent locally by :
-./docker_run.sh
+# Train a Beta-VAE with TF from disentanglement_lib. 
+python train.py
 
-# Now you should see the output of your training inside the
-# ./scratch/shared folder
-
-# Then you can do a simple local evaluation by running :
-export DISENTANGLEMENT_LIB_DATA="./scratch/dataset/"
+# Run the local evaluation
 python local_evaluation.py
 ```
 
@@ -72,6 +59,7 @@ cd neurips2019_disentanglement_challenge_starter_kit
 
 # Make sure that your datasets live in "./scatch/dataset". 
 # If they do not, change train_environ.sh accordingly. 
+
 source train_environ.sh
 export AICROWD_EVALUATION_NAME=myvae
 
@@ -92,8 +80,7 @@ of your repository by doing :
 conda env export --no-build > environment.yml
 ```
 
-This `environment.yml` file will be used to recreate the `conda environment` inside the Docker container.
-This repository includes an example `environment.yml`
+This `environment.yml` file will be used to recreate the `conda environment`. This repository includes an example `environment.yml`
 
 # What should my code structure be like ?
 
@@ -124,8 +111,6 @@ Please specify if your code will a GPU or not for the evaluation of your model. 
 
 ### Packaging of your software environment
 
-You can specify your software environment by using all the [available configuration options of repo2docker](https://repo2docker.readthedocs.io/en/latest/config_files.html). (But please remember to use [aicrowd-repo2docker](https://pypi.org/project/aicrowd-repo2docker/) to have GPU support)
-
 The recommended way is to use Anaconda configuration files using **environment.yml** files.
 
 ```sh
@@ -141,16 +126,6 @@ conda env export --no-build > environment.yml
 #
 # could work.
 ```
-
-### Debugging the packaged software environment
-
-If you have issues with your submission because of your software environment and dependencies, you can debug them, by first building the docker image, and then getting a shell inside the image by :
-
-```
-nvidia-docker run --net=host -it $IMAGE_NAME /bin/bash
-```
-
-and then exploring to find the cause of the issue.
 
 ### Code Entrypoint
 
