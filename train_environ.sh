@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export PYTHONPATH=${PYTHONPATH}:${PWD}
+
 # Set up training environment. You might need to set the evaluation name and
 # the dataset manually.
 export AICROWD_OUTPUT_PATH=./scratch/shared
