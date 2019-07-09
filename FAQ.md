@@ -38,3 +38,11 @@ sudo nvidia-docker run \
     /www/run.sh
 
 ```
+
+* **What docker base image is used on the evaluator?**
+The evaluator used the the following base image : `nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04`
+(as of `aicrowd-repo2docker` version `0.9.1`)
+
+* **How can I install extra dependencies for my submission ?**
+You can add the packages to the `apt.txt` file at the root of your repository here : [https://github.com/AIcrowd/neurips2019_disentanglement_challenge_starter_kit/blob/master/apt.txt](https://github.com/AIcrowd/neurips2019_disentanglement_challenge_starter_kit/blob/master/apt.txt)
+The package names have to be Ubuntu `apt` compatible.
