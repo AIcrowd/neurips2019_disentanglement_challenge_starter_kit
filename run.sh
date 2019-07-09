@@ -6,15 +6,14 @@ source ./train_environ.sh
 # add them to your PYTHONPATH:
 #export PYTHONPATH=${PYTHONPATH}:path/to/your/dependency
 
-# Comment and uncomment as required:
-# Tensorflow
-#export PYTHONPATH=${PYTHONPATH}:./tensorflow
-#python ./tensorflow/train_tensorflow.py
+# Comment and uncomment as required...
+# Tensorflow:
+python train_tensorflow.py
 
-# Pytorch
+# Pytorch:
 #export PYTHONPATH=${PYTHONPATH}:./pytorch
-python ./pytorch/train_pytorch.py --epochs 1
+#python ./pytorch/train_pytorch.py
 
-# Numpy
+# Numpy:
 #export PYTHONPATH=${PYTHONPATH}:./numpy
 #python ./numpy/train_numpy.py
