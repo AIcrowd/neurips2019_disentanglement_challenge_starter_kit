@@ -22,3 +22,7 @@ python ${NDC_ROOT}/pytorch/train_pytorch.py --epochs 1
 # Numpy:
 #export PYTHONPATH=${PYTHONPATH}:${NDC_ROOT}/numpy
 #python ${NDC_ROOT}/numpy/train_numpy.py
+
+# Execute the local evaluation
+#echo "----- LOCAL EVALUATION -----"
+#python ${NDC_ROOT}/local_evaluation.py
