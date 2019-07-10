@@ -86,7 +86,7 @@ python numpy/train_numpy.py
 ```
 
 #### Evaluation
-Finally, it's time to run the evaluation locally. This script will detect what framework you used, provided you used the right utility functions. 
+Finally, it's time to run the evaluation locally. This script will detect what framework you used, provided you used the right utility functions for [PyTorch](pytorch/train_pytorch.py#L168) or [NumPy](numpy/train_numpy.py#L37) (links lead to examples). 
 ```
 Step 5:
 # Run the local evaluation
