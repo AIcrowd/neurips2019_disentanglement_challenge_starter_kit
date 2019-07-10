@@ -40,40 +40,55 @@ pip install -r requirements.txt
 
 Follow the instructions [here](https://github.com/google-research/disentanglement_lib#downloading-the-data-sets) to download the publicly available datasets, and store them inside `./scratch/datasets` folder. Please ensure that the datasets are not checked into the repository.
 
-### Train and Test Submission locally with Tensorflow
+### Train and Test Submission locally with Tensorflow / Pytorch / Numpy
 
-#### Note: This is just a test submission which will only train for 10 steps (to keep training time short). To attain reasonable performance, about 300'000 training steps are recommended. This setting can be changed in model.gin.
+#### Setup
 
+The first three steps apply to all frameworks.
 ```
+# Step 1:
 cd neurips2019_disentanglement_challenge_starter_kit
 
+# Step 2: 
 # Make sure that your datasets live in "./scatch/dataset". 
-# If they do not, change train_environ.sh accordingly. 
-
+# If they do not, either make sure they do (recommended)
+# or change train_environ.sh accordingly. Finally:
 source train_environ.sh
+
+# Step 3:
+# Enter the name of your experiment
 export AICROWD_EVALUATION_NAME=myvae
-
-# Train a Beta-VAE with TF from disentanglement_lib. 
-python train.py
-
-# Run the local evaluation
-python local_evaluation.py
+# Enter the name of the dataset
+export AICROWD_DATASET_NAME=cars3d
 ```
 
-### Train and Test locally with Pytorch
+#### PyTorch
 ```
-cd neurips2019_disentanglement_challenge_starter_kit
+# Step 4 (PyTorch): 
+# Train a VAE with Pytorch
+python pytorch/train_pytorch.py
+```
+Take a look at the python file for available commandline arguments. 
 
-# Make sure that your datasets live in "./scatch/dataset". 
-# If they do not, change train_environ.sh accordingly. 
+#### Tensorflow
+```
+# Step 4 (TensorFlow)
+# Train a VAE with TF and disentanglement_lib 
+python tensorflow/train_tensorflow.py
+```
+Note: This is just a test submission which will only train for 10 steps (to keep training time short). To attain reasonable performance, about 300'000 training steps are recommended. This setting can be changed in `tensorflow/model.gin`.
 
-source train_environ.sh
-export AICROWD_EVALUATION_NAME=myvae
+#### NumPy
+```
+# Step 4 (NumPy): 
+# This saves a hard-coded representation function to file.
+python numpy/train_numpy.py
+```
 
-# Train a plain old VAE with Pytorch. 
-# See train_pytorch.py for more instructions
-python train_pytorch.py --epochs 10
-
+#### Evaluation
+Finally, it's time to run the evaluation locally. This script will detect what framework you used, provided you used the right utility functions. 
+```
+Step 5:
 # Run the local evaluation
 python local_evaluation.py
 ```
