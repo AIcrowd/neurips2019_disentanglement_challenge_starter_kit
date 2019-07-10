@@ -39,6 +39,12 @@ import gin.tf
 from tensorflow.python.framework.errors_impl import NotFoundError
 
 
+# Some more redundant code, but this allows us to not import utils_pytorch
+def get_dataset_name():
+    """Reads the name of the dataset from the environment variable `AICROWD_DATASET_NAME`."""
+    return os.getenv("AICROWD_DATASET_NAME", "cars3d")
+
+
 def evaluate_with_gin(model_dir,
                       output_dir,
                       overwrite=False,
@@ -116,7 +122,6 @@ def evaluate(model_dir,
     except NotFoundError:
         # If we did not train with disentanglement_lib, there is no "previous step",
         # so we'll have to rely on the environment variable.
-        from load_dataset import get_dataset_name
         if gin.query_parameter("dataset.name") == "auto":
             with gin.unlock_config():
                 gin.bind_parameter("dataset.name", get_dataset_name())

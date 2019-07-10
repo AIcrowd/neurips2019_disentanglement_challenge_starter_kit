@@ -51,6 +51,7 @@ experiment_name = os.getenv("AICROWD_EVALUATION_NAME", "experiment_name")
 DATASET_NAME = "auto" 
 overwrite = True
 experiment_output_path = os.path.join(base_path, experiment_name)
+ROOT = os.getenv("NDC_ROOT", ".")
 
 # Print the configuration for reference
 if not MONKEY:
@@ -61,13 +62,20 @@ else:
     print(f"Evaluating Experiment '{exp_config.experiment_name}' "
           f"from {exp_config.base_path} on dataset {exp_config.dataset_name}")
 
+# ----- Helpers -----
+
+
+def get_full_path(filename):
+    return os.path.join(ROOT, filename)
+
+
 ##############################################################################
 # Gather Evaluation Configs | Compute Metrics
 ##############################################################################
 _study = unsupervised_study_v1.UnsupervisedStudyV1()
 evaluation_configs = sorted(_study.get_eval_config_files())
 #Add IRS
-evaluation_configs.append("./extra_metrics_configs/irs.gin")
+evaluation_configs.append(get_full_path("extra_metrics_configs/irs.gin"))
 
 # Compute individual metrics
 expected_evaluation_metrics = [

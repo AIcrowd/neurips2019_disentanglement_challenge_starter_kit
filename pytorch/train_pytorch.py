@@ -22,8 +22,8 @@ representation function is a torch.jit.ScriptModule, you're all set
 will be written out. To learn what tracing entails: 
 https://pytorch.org/docs/stable/jit.html#torch.jit.trace 
 
-You'll find a few more utility functions in utils_pytorch.py (for pytorch related stuff) and in 
-load_dataset.py (for data logistics).
+You'll find a few more utility functions in utils_pytorch.py for pytorch related stuff and 
+for data logistics.
 """
 
 import argparse
@@ -33,7 +33,6 @@ from torch import nn, optim
 from torch.nn import functional as F
 
 import utils_pytorch as pyu
-import load_dataset as load
 
 import aicrowd_helpers
 
@@ -57,7 +56,7 @@ torch.manual_seed(args.seed)
 device = torch.device("cuda" if args.cuda else "cpu")
 
 kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
-train_loader = load.get_loader(batch_size=args.batch_size, **kwargs)
+train_loader = pyu.get_loader(batch_size=args.batch_size, **kwargs)
 
 
 class Encoder(nn.Module):

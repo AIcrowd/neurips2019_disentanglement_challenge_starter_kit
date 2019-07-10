@@ -33,10 +33,18 @@ import aicrowd_helpers
 # 0. Settings
 # ------------------------------------------------------------------------------
 # By default, we save all the results in subdirectories of the following path.
-base_path = os.getenv("AICROWD_OUTPUT_PATH","../scratch/shared")
+base_path = os.getenv("AICROWD_OUTPUT_PATH", "../scratch/shared")
 experiment_name = os.getenv("AICROWD_EVALUATION_NAME", "experiment_name")
 DATASET_NAME = os.getenv("AICROWD_DATASET_NAME", "cars3d")
+ROOT = os.getenv("NDC_ROOT", "..")
 overwrite = True
+
+# 0.1 Helpers
+# ------------------------------------------------------------------------------
+
+
+def get_full_path(filename):
+    return os.path.join(ROOT, filename)
 
 
 ########################################################################
@@ -80,8 +88,8 @@ experiment_output_path = os.path.join(base_path, experiment_name)
 aicrowd_helpers.register_progress(0.0)
 
 train.train_with_gin(
-    os.path.join(experiment_output_path, "model"), overwrite, ["model.gin"],
-    gin_bindings)
+    os.path.join(experiment_output_path, "model"), overwrite,
+    [get_full_path("model.gin")], gin_bindings)
 
 ########################################################################
 # Register Progress (end of training, start of representation extraction)
@@ -91,9 +99,10 @@ aicrowd_helpers.register_progress(0.90)
 # Extract the mean representation for both of these models.
 representation_path = os.path.join(experiment_output_path, "representation")
 model_path = os.path.join(experiment_output_path, "model")
-postprocess_gin = ["postprocess.gin"]  # This contains the settings.
+# This contains the settings:
+postprocess_gin = [get_full_path("postprocess.gin")]
 postprocess.postprocess_with_gin(model_path, representation_path, overwrite,
-                                  postprocess_gin)
+                                 postprocess_gin)
 
 print("Written output to : ", experiment_output_path)
 ########################################################################
