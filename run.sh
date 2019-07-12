@@ -24,6 +24,12 @@ export PYTHONPATH=${PYTHONPATH}:${NDC_ROOT}/tensorflow
 python ${NDC_ROOT}/tensorflow/train_tensorflow.py
 
 # Pytorch:
+# 
+# Note: In case of Pytorch, you will have to export your software runtime via 
+#       Anaconda (After installing pytorch), as shown here : 
+#		https://github.com/AIcrowd/neurips2019_disentanglement_challenge_starter_kit#how-do-i-specify-my-software-runtime-
+# 	as pytorch cannot be installed with just `pip`
+#
 #export PYTHONPATH=${PYTHONPATH}:${NDC_ROOT}/pytorch
 #python ${NDC_ROOT}/pytorch/train_pytorch.py --epochs 1
 
