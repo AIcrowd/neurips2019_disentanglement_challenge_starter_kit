@@ -44,7 +44,7 @@ overwrite = True
 
 
 def get_full_path(filename):
-    return os.path.join(ROOT, filename)
+    return os.path.join(ROOT, "tensorflow", filename)
 
 
 ########################################################################
