@@ -20,12 +20,12 @@ fi
 
 # Comment and uncomment as required...
 # Tensorflow:
-#export PYTHONPATH=${PYTHONPATH}:${NDC_ROOT}/tensorflow
-#python ${NDC_ROOT}/tensorflow/train_tensorflow.py
+export PYTHONPATH=${PYTHONPATH}:${NDC_ROOT}/tensorflow
+python ${NDC_ROOT}/tensorflow/train_tensorflow.py
 
 # Pytorch:
-export PYTHONPATH=${PYTHONPATH}:${NDC_ROOT}/pytorch
-python ${NDC_ROOT}/pytorch/train_pytorch.py --epochs 1
+#export PYTHONPATH=${PYTHONPATH}:${NDC_ROOT}/pytorch
+#python ${NDC_ROOT}/pytorch/train_pytorch.py --epochs 1
 
 # Numpy:
 #export PYTHONPATH=${PYTHONPATH}:${NDC_ROOT}/numpy
