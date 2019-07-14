@@ -1,6 +1,6 @@
 import numpy as np
 import utils_numpy
-
+import aicrowd_helpers
 
 def hack(x):
     """
@@ -34,4 +34,16 @@ def hack(x):
 
 
 if __name__ == '__main__':
+    ########################################################################
+    # Register Execution Start
+    ########################################################################
+    aicrowd_helpers.execution_start()    
+    
     utils_numpy.export_function(hack)
+    
+    aicrowd_helpers.register_progress(1.0)
+    ########################################################################
+    # Submit Results for evaluation
+    ########################################################################
+    cuda.close() 
+    aicrowd_helpers.submit()    
