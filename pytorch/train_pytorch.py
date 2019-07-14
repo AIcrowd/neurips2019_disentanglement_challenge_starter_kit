@@ -169,3 +169,4 @@ if __name__ == '__main__':
                      input_shape=(1, 3, 64, 64))
     # Done!
     aicrowd_helpers.register_progress(1.0)
+    aicrowd_helpers.submit()
