@@ -79,7 +79,7 @@ def get_model_path(base_path=None, experiment_name=None, make=True):
     return model_path
 
 
-def export_model(model, path=None, input_shape=(1, 3, 64, 64), use_script_module=True):
+def export_model(model, path=None, input_shape=(1, 3, 64, 64), use_script_module=False):
     """
     Exports the model. If the model is a `ScriptModule`, it is saved as is. If not,
     it is traced (with the given input_shape) and the resulting ScriptModule is saved
@@ -105,7 +105,7 @@ def export_model(model, path=None, input_shape=(1, 3, 64, 64), use_script_module
     """
     path = get_model_path() if path is None else path
     model = deepcopy(model).cpu().eval()
-    if use_torch_script:
+    if use_script_module:
         if not isinstance(model, torch.jit.ScriptModule):
             assert input_shape is not None, "`input_shape` must be provided since model is not a " \
                                             "`ScriptModule`."
@@ -119,7 +119,7 @@ def export_model(model, path=None, input_shape=(1, 3, 64, 64), use_script_module
         return path        
 
 
-def import_model(path=None, use_script_module=True):
+def import_model(path=None, use_script_module=False):
     """
     Imports a model (as ScriptModule) from file.
 
