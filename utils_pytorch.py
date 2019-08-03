@@ -79,7 +79,7 @@ def get_model_path(base_path=None, experiment_name=None, make=True):
     return model_path
 
 
-def export_model(model, path=None, input_shape=(1, 3, 64, 64), use_script_module=False):
+def export_model(model, path=None, input_shape=(1, 3, 64, 64), use_script_module=True):
     """
     Exports the model. If the model is a `ScriptModule`, it is saved as is. If not,
     it is traced (with the given input_shape) and the resulting ScriptModule is saved
@@ -113,22 +113,21 @@ def export_model(model, path=None, input_shape=(1, 3, 64, 64), use_script_module
         else:
             traced_model = model
         torch.jit.save(traced_model, path)
-        return path
     else:
         torch.save(model, path) # saves model as a nn.Module
-        return path        
+        
+    return path        
 
 
-def import_model(path=None, use_script_module=False):
+def import_model(path=None):
     """
-    Imports a model (as ScriptModule) from file.
+    Imports a model (as torch.jit.ScriptModule or torch.nn.Module) from file.
+    By default the file is imported as torch.jit.ScriptModule. If it fails due to saved model being torch.nn.Module, the file is imported as torch.nn.Module.
 
     Parameters
     ----------
     path : str
         Path to where the model is saved. Defaults to the return value of the `get_model_path`
-    use_script_module : True or False (default = True)
-        If True loads model as torch.jit.ScriptModule. Else loads as a normal Module.
 
     Returns
     -------
@@ -136,9 +135,9 @@ def import_model(path=None, use_script_module=False):
         The model file.
     """
     path = get_model_path() if path is None else path
-    if use_script_module:
+    try:
         return torch.jit.load(path)
-    else:
+    except:
         return torch.load(path) # loads model as a nn.Module
 
 
