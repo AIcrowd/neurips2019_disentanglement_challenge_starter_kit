@@ -137,7 +137,7 @@ def import_model(path=None):
     path = get_model_path() if path is None else path
     try:
         return torch.jit.load(path)
-    except:
+    except RuntimeError:
         return torch.load(path) # loads model as a nn.Module
 
 
