@@ -96,7 +96,8 @@ def export_model(model, path=None, input_shape=(1, 3, 64, 64), use_script_module
         Shape of the input to trace the module with. This is only required if model is not a
         torch.jit.ScriptModule.
     use_script_module : True or False (default = True)
-        If True saves model as torch.jit.ScriptModule. Else saves as a normal Module.
+        If True saves model as torch.jit.ScriptModule -- this is highly recommended.
+        Setting it to False may cause later evaluation to fail.
 
     Returns
     -------
@@ -105,7 +106,9 @@ def export_model(model, path=None, input_shape=(1, 3, 64, 64), use_script_module
     """
     path = get_model_path() if path is None else path
     model = deepcopy(model).cpu().eval()
-    if use_script_module:
+    if isinstance(model, torch.jit.ScriptModule):
+        assert use_script_module, "Provided model is a ScriptModule, please set use_script_module to True."
+    if use_script_module:
         if not isinstance(model, torch.jit.ScriptModule):
             assert input_shape is not None, "`input_shape` must be provided since model is not a " \
                                             "`ScriptModule`."
@@ -113,10 +116,9 @@ def export_model(model, path=None, input_shape=(1, 3, 64, 64), use_script_module
         else:
             traced_model = model
         torch.jit.save(traced_model, path)
-    else:
+    else:
         torch.save(model, path) # saves model as a nn.Module
-        
-    return path        
+    return path
 
 
 def import_model(path=None):
@@ -138,7 +140,10 @@ def import_model(path=None):
     try:
         return torch.jit.load(path)
     except RuntimeError:
-        return torch.load(path) # loads model as a nn.Module
+        try:
+            return torch.load(path) # loads model as a nn.Module
+        except Exception as e:
+            raise IOError("Could not load file. Please save as torch.jit.ScriptModule instead.") from e
 
 
 def make_representor(model, cuda=None):
