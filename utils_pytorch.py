@@ -79,7 +79,7 @@ def get_model_path(base_path=None, experiment_name=None, make=True):
     return model_path
 
 
-def export_model(model, path=None, input_shape=(1, 3, 64, 64)):
+def export_model(model, path=None, input_shape=(1, 3, 64, 64), use_script_module=True):
     """
     Exports the model. If the model is a `ScriptModule`, it is saved as is. If not,
     it is traced (with the given input_shape) and the resulting ScriptModule is saved
@@ -95,6 +95,9 @@ def export_model(model, path=None, input_shape=(1, 3, 64, 64)):
     input_shape : tuple or list
         Shape of the input to trace the module with. This is only required if model is not a
         torch.jit.ScriptModule.
+    use_script_module : True or False (default = True)
+        If True saves model as torch.jit.ScriptModule -- this is highly recommended.
+        Setting it to False may cause later evaluation to fail.
 
     Returns
     -------
@@ -103,33 +106,44 @@ def export_model(model, path=None, input_shape=(1, 3, 64, 64)):
     """
     path = get_model_path() if path is None else path
     model = deepcopy(model).cpu().eval()
-    if not isinstance(model, torch.jit.ScriptModule):
-        assert input_shape is not None, "`input_shape` must be provided since model is not a " \
-                                        "`ScriptModule`."
-        traced_model = trace(model, torch.zeros(*input_shape))
+    if isinstance(model, torch.jit.ScriptModule):
+        assert use_script_module, "Provided model is a ScriptModule, please set use_script_module to True."
+    if use_script_module:
+        if not isinstance(model, torch.jit.ScriptModule):
+            assert input_shape is not None, "`input_shape` must be provided since model is not a " \
+                                            "`ScriptModule`."
+            traced_model = trace(model, torch.zeros(*input_shape))
+        else:
+            traced_model = model
+        torch.jit.save(traced_model, path)
     else:
-        traced_model = model
-    torch.jit.save(traced_model, path)
+        torch.save(model, path) # saves model as a nn.Module
     return path
 
 
 def import_model(path=None):
     """
-    Imports a model (as ScriptModule) from file.
+    Imports a model (as torch.jit.ScriptModule or torch.nn.Module) from file.
+    By default the file is imported as torch.jit.ScriptModule. If it fails due to saved model being torch.nn.Module, the file is imported as torch.nn.Module.
 
     Parameters
     ----------
     path : str
         Path to where the model is saved. Defaults to the return value of the `get_model_path`
-        function above.
 
     Returns
     -------
-    torch.jit.ScriptModule
+    torch.jit.ScriptModule / torch.nn.Module
         The model file.
     """
     path = get_model_path() if path is None else path
-    return torch.jit.load(path)
+    try:
+        return torch.jit.load(path)
+    except RuntimeError:
+        try:
+            return torch.load(path) # loads model as a nn.Module
+        except Exception as e:
+            raise IOError("Could not load file. Please save as torch.jit.ScriptModule instead.") from e
 
 
 def make_representor(model, cuda=None):
